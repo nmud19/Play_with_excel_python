@@ -24,6 +24,7 @@ for item in x:
 #reassign the list
 csv['Currency'] = li1
 
+csv.columns = ['school_id', 'metric', 'sept', 'oct','nov','dec','jan','feb','march','april','may', 'june', 'july']
 ##write it back to a csv files
 csv.to_csv('test1.csv',index = False)
 print(csv)
