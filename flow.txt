@@ -1,0 +1,17 @@
+Overall flow of the program:
+
+Extract all file names
+Go by file type such as PnL, capex,BS
+
+Select one file type list
+for loop till list ends
+	open file
+	sanitise file
+
+	extract colums
+	mutate them 
+	create resultant
+	store/append resultant in new df
+end loop
+
+*Write to table using the df
