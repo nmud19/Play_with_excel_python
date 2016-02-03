@@ -6,6 +6,173 @@ result = pd.DataFrame()
 result2 = pd.DataFrame()
 
 
+def add_multiple_metrics(metric_list,school_name_in_excel_file, month_processed):
+	values_list = []
+	#metric_name_in_excel_file, school_name_in_excel_file, month_processed
+	for item in metric_list:
+		values_list = values_list + extract_metric(item, school_name_in_excel_file,month_processed)
+	return 
+
+def secondary(school_name_in_excel_file, month_processed,current_year,result,result2):
+	'''
+	Pupils - Yr07-G06
+	Pupils - Yr08-G07
+	Pupils - Yr09-G08
+	Pupils - Yr10-G09
+	Pupils - Yr11-G10
+	Pupils - Yr12-G11
+	Pupils - Yr13-G12
+	'''
+	month = month_index(month_processed)
+	year = year_index(current_year, month)
+	#extract_metric(metric_name, school_id, month)
+	nurs0 = extract_metric("Pupils - Yr07-G06", school_name_in_excel_file,month_processed)
+	nurs1 = extract_metric("Pupils - Yr08-G07", school_name_in_excel_file,month_processed)
+	nurs2 = extract_metric("Pupils - Yr09-G08", school_name_in_excel_file,month_processed)
+	nurs3 = extract_metric("Pupils - Yr10-G09", school_name_in_excel_file,month_processed)
+	nurs_other = extract_metric("Pupils - Yr11-G10", school_name_in_excel_file,month_processed)
+	nurs_etc = extract_metric("Pupils - Yr12-G11", school_name_in_excel_file,month_processed)
+	last_array = extract_metric("Pupils - Yr13-G12", school_name_in_excel_file,month_processed)
+	#convert all to arrays
+	nurs0 = np.array(nurs0)
+	nurs0[np.isnan(nurs0)] = 0
+	nurs1 = np.array(nurs1)
+	nurs1[np.isnan(nurs1)] = 0
+	nurs2 = np.array(nurs2)
+	nurs2[np.isnan(nurs2)] = 0
+	
+	nurs3 = np.array(nurs3)
+	nurs3[np.isnan(nurs3)] = 0
+	
+	nurs_other = np.array(nurs_other)
+	nurs_other[np.isnan(nurs_other)] = 0
+	
+	nurs_etc = np.array(nurs_etc)
+	nurs_etc[np.isnan(nurs_etc)] = 0
+	
+	last_array = np.array(last_array)
+	last_array[np.isnan(last_array)] = 0
+	#print(nurs0,nurs1,nurs2,nurs3,nurs_other,nurs_etc)
+	
+	#add to a single res11ult
+	res = nurs0+nurs1+nurs2+nurs3+nurs_other+nurs_etc+last_array
+	##
+	metric_values = res.tolist()
+	print(metric_values)
+	school_id = identify_school_name(school_name_in_excel_file)
+	result2 = assign_to_metric(school_id , month, year ,'secondary', metric_values)
+	result = concat_df(result , result2)
+	return result
+
+
+def upper_elementary(school_name_in_excel_file, month_processed,current_year,result,result2):
+	'''Lower_elementary
+	Pupils - Yr04-G03
+	Pupils - Yr05-G04
+	Pupils - Yr06-G05
+	'''
+	month = month_index(month_processed)
+	year = year_index(current_year, month)
+	#extract_metric(metric_name, school_id, month)
+	yr1 = extract_metric("Pupils - Yr04-G03", school_name_in_excel_file,month_processed)
+	yr2 = extract_metric("Pupils - Yr05-G04", school_name_in_excel_file,month_processed)
+	yr3 = extract_metric("Pupils - Yr06-G05", school_name_in_excel_file,month_processed)
+	#convert all to arrays
+	yr1 = np.array(yr1)
+	yr1[np.isnan(yr1)] = 0
+	yr2 = np.array(yr2)
+	yr2[np.isnan(yr2)] = 0
+	yr3 = np.array(yr3)
+	yr3[np.isnan(yr3)] = 0
+	#print(nurs0,nurs1,nurs2,nurs3,nurs_other,nurs_etc)
+	
+	#add to a single res11ult
+	res = yr1+yr2+yr3
+	##
+	metric_values = res.tolist()
+	print(metric_values)
+	school_id = identify_school_name(school_name_in_excel_file)
+	result2 = assign_to_metric(school_id , month, year ,'upper_elementary', metric_values)
+	result = concat_df(result , result2)
+	return result
+
+def lower_elementary(school_name_in_excel_file, month_processed,current_year,result,result2):
+	'''Lower_elementary
+	Pupils - Yr01-KG-KG2
+	Pupils - Yr02-G01
+	Pupils - Yr03-G02
+	'''
+	month = month_index(month_processed)
+	year = year_index(current_year, month)
+	#extract_metric(metric_name, school_id, month)
+	yr1 = extract_metric("Pupils - Yr01-KG-KG2", school_name_in_excel_file,month_processed)
+	yr2 = extract_metric("Pupils - Yr02-G01", school_name_in_excel_file,month_processed)
+	yr3 = extract_metric("Pupils - Yr03-G02", school_name_in_excel_file,month_processed)
+	#convert all to arrays
+	yr1 = np.array(yr1)
+	yr1[np.isnan(yr1)] = 0
+	yr2 = np.array(yr2)
+	yr2[np.isnan(yr2)] = 0
+	yr3 = np.array(yr3)
+	yr3[np.isnan(yr3)] = 0
+	#print(nurs0,nurs1,nurs2,nurs3,nurs_other,nurs_etc)
+	
+	#add to a single res11ult
+	res = yr1+yr2+yr3
+	##
+	metric_values = res.tolist()
+	print(metric_values)
+	school_id = identify_school_name(school_name_in_excel_file)
+	result2 = assign_to_metric(school_id , month, year ,'lower_elementary', metric_values)
+	result = concat_df(result , result2)
+	return result
+
+def nursery(school_name_in_excel_file, month_processed,current_year,result,result2):
+	'''Pupils - Nursery -0+
+	Pupils - Nursery -1+
+	Pupils - Nursery -2+
+	Pupils - Nursery -3+-EC3-Pre K
+	Pupils - Nursery Other
+	Pupils - RCN-EC4-KG1
+	'''
+	month = month_index(month_processed)
+	year = year_index(current_year, month)
+	#extract_metric(metric_name, school_id, month)
+	nurs0 = extract_metric("Pupils - Nursery -0+", school_name_in_excel_file,month_processed)
+	nurs1 = extract_metric("Pupils - Nursery -1+", school_name_in_excel_file,month_processed)
+	nurs2 = extract_metric("Pupils - Nursery -2+", school_name_in_excel_file,month_processed)
+	nurs3 = extract_metric("Pupils - Nursery -3+-EC3-Pre K", school_name_in_excel_file,month_processed)
+	nurs_other = extract_metric("Pupils - Nursery Other", school_name_in_excel_file,month_processed)
+	nurs_etc = extract_metric("Pupils - RCN-EC4-KG1", school_name_in_excel_file,month_processed)
+	#convert all to arrays
+	nurs0 = np.array(nurs0)
+	nurs0[np.isnan(nurs0)] = 0
+	nurs1 = np.array(nurs1)
+	nurs1[np.isnan(nurs1)] = 0
+	nurs2 = np.array(nurs2)
+	nurs2[np.isnan(nurs2)] = 0
+	
+	nurs3 = np.array(nurs3)
+	nurs3[np.isnan(nurs3)] = 0
+	
+	nurs_other = np.array(nurs_other)
+	nurs_other[np.isnan(nurs_other)] = 0
+	
+	nurs_etc = np.array(nurs_etc)
+	nurs_etc[np.isnan(nurs_etc)] = 0
+	
+	#print(nurs0,nurs1,nurs2,nurs3,nurs_other,nurs_etc)
+	
+	#add to a single res11ult
+	res = nurs0+nurs1+nurs2+nurs3+nurs_other+nurs_etc
+	##
+	metric_values = res.tolist()
+	print(metric_values)
+	school_id = identify_school_name(school_name_in_excel_file)
+	result2 = assign_to_metric(school_id , month, year ,'nursery', metric_values)
+	result = concat_df(result , result2)
+	return result
+
 def load_dual_metric(metric1 , metric2 , school_name_in_excel_file, month_processed,current_year, metric_name_in_fact_table,result,result2, op ):
 	
 	month = month_index(month_processed)
@@ -45,7 +212,6 @@ def BS_extract_metric(metric_name, school_id, month,year):
 	result2 = df[(df['metric'] == metric_name) & (df['school_id'] == school_id)]
 	result2 = result2.ix[:,column_name_start:column_name_end]
 	result2 = result2.values.tolist()
-	print(result2)
 	result2 = result2[0]
 	return result2
 
@@ -135,6 +301,14 @@ def finance_metrics(year_of_file, month_of_file, school_id, result, result2):
 	#temporary assignment
 	school_name_in_excel_file = map_school_name_by_excel(school_id)
 	#load_metric(metric_name_in_excel_file, school_name_in_excel_file, month_processed,current_year, metric_name_in_fact_table,result,result2) 
+	
+	#enrollment 
+	result = load_metric('Total Pupils', school_name_in_excel_file, month_of_file, year_of_file, 'total_pupils', result,result2)
+	result = nursery(school_name_in_excel_file, month_of_file,year_of_file,result,result2)
+	result = lower_elementary(school_name_in_excel_file, month_of_file,year_of_file,result,result2)
+	result = upper_elementary(school_name_in_excel_file, month_of_file,year_of_file,result,result2)
+	result = secondary(school_name_in_excel_file, month_of_file,year_of_file,result,result2)
+	
 	#revenue
 	result = load_metric('Total Revenue', school_name_in_excel_file, month_of_file, year_of_file, 'Revenue', result,result2)
 	# fees 
@@ -155,6 +329,20 @@ def finance_metrics(year_of_file, month_of_file, school_id, result, result2):
 	result = load_metric('Underlying EBITDA', school_name_in_excel_file, month_of_file, year_of_file, 'ebitda', result,result2)
 	#ebitda perc
 	result = load_metric("Underlying EBITDA % Income", school_name_in_excel_file, month_of_file, year_of_file, 'ebitda_perc', result,result2)
+	#total a/r
+	'''
+	30 Days + Debtors
+	60 Days + Debtors
+	90 Days + Debtors
+	120 Days + Debtors
+	1 Year + Debtors
+	Total Debtors
+	'''
+	result = load_metric("Total Debtors", school_name_in_excel_file, month_of_file, year_of_file, 'total_ar', result,result2)
+	result = load_metric("30 Days + Debtors", school_name_in_excel_file, month_of_file, year_of_file, 'ar_30', result,result2)
+	result = load_metric("60 Days + Debtors", school_name_in_excel_file, month_of_file, year_of_file, 'ar_60', result,result2)
+	result = load_metric("90 Days + Debtors", school_name_in_excel_file, month_of_file, year_of_file, 'ar_90', result,result2)
+	
 	return result
 
 def staff_metrics(year_of_file, month_of_file, school_id, result, result2):
@@ -169,7 +357,12 @@ def staff_metrics(year_of_file, month_of_file, school_id, result, result2):
 	#3.Staff Costs % Revenue
 	result = load_dual_metric('Staff Costs' , 'Total Revenue', school_name_in_excel_file, month_of_file, year_of_file, 'staff_costs_by_revenue',result,result2, '/' )
 	#4.Pupil Teacher Ratio (PTR)
+	#Total School PTR
+	result = load_metric("Total School PTR", school_name_in_excel_file, month_of_file, year_of_file, 'Total_School_PTR', result , result2 )
+
 	#5. Pupil Total Teaching Staff Ratio (PTTRS)
+	result = load_metric("Total School PTTSR", school_name_in_excel_file, month_of_file, year_of_file, 'Total_School_PTTSR', result , result2 )
+
 
 	# 6.Total Staff Churn
 		#sumn of all leavers
@@ -193,11 +386,19 @@ def staff_metrics(year_of_file, month_of_file, school_id, result, result2):
 def identify_school_name(school_name_in_excel_file):
 	if(school_name_in_excel_file =='Total Stamford AIS'):
 		school_id = 'sais'
+	elif(school_name_in_excel_file =='AISS $'):
+		school_id = 'aiss'
+	else:
+		pass
 	return school_id
 
 def map_school_name_by_excel(school_name_in_excel_file):
 	if(school_name_in_excel_file == 'sais'):
 		school_id = 'Total Stamford AIS'
+	elif(school_name_in_excel_file == 'aiss'):
+		school_id = 'AISS $'
+	else:
+		pass
 	return school_id
 
 def load_metric(metric_name_in_excel_file, school_name_in_excel_file, month_processed,current_year, metric_name_in_fact_table,result,result2 ):
@@ -264,6 +465,7 @@ def month_index(month):
 				i=1
 	return li
 
+
 #main program
 
 '''Read the PnL file'''
@@ -275,6 +477,11 @@ result = finance_metrics(2015,'dec','sais',result,result2)
 #staff metrics
 result = staff_metrics(2015,'dec','sais',result,result2)
 
+#for aiss
+result = finance_metrics(2015,'dec','aiss',result,result2)
+#staff metrics
+result = staff_metrics(2015,'dec','aiss',result,result2)
+
 
 '''Read the Dashboard file'''
 df = pd.read_excel("AISS_SAIS_DASHBOARD_DEC_2015.xlsx",skiprows = 1)
@@ -283,6 +490,15 @@ df.columns = BS_month_column_list
 df = BS_sanitise_file(df)
 # The function to pull out 5 metrics
 result = BS_cash_convent_metrics('dec', '2015', 'SAIS', result)
+
+#for aiss
+df = pd.read_excel("AISS_SAIS_DASHBOARD_DEC_2015.xlsx",skiprows = 1)
+#print(len(df.columns) , len(month_column_list))
+df.columns = BS_month_column_list
+df = BS_sanitise_file(df)
+# The function to pull out 5 metrics(give school_id in CAPITALS)
+result = BS_cash_convent_metrics('dec', '2015', 'AISS', result)
+
 print(result) 
 
 

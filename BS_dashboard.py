@@ -24,9 +24,5 @@ df = pd.read_excel("AISS_SAIS_DASHBOARD_DEC_2015.xlsx",skiprows = 1)
 #print(len(df.columns) , len(month_column_list))
 df.columns = month_column_list
 df = BS_sanitise_file(df)
-
-
-
-
 print(df['metric'])
 
