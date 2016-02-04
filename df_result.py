@@ -4,6 +4,99 @@ month_list = ['sept', 'oct','nov','dec','jan','feb','march','april','may', 'june
 BS_month_column_list = ['school_id', 'metric', 'remark' , 'note', 'sep2012', 'oct2012', 'nov2012', 'dec2012', 'jan2013' , 'feb2013', 'mar2013', 'apr2013', 'may2013', 'jun2013', 'jul2013', 'aug2013','sep2013', 'oct2013', 'nov2013', 'dec2013', 'jan2014' , 'feb2014', 'mar2014', 'apr2014', 'may2014', 'jun2014', 'jul2014', 'aug2014', 'sep2014', 'oct2014', 'nov2014', 'dec2014', 'jan2015' , 'feb2015', 'mar2015', 'apr2015', 'may2015', 'jun2015', 'jul2015', 'aug2015', 'sep2015', 'oct2015', 'nov2015', 'dec2015', 'jan2016' , 'feb2016']
 result = pd.DataFrame()
 result2 = pd.DataFrame()
+budget = pd.DataFrame()
+budget2 = pd.DataFrame()
+
+def total_teacher_churn_perc(school_name_in_excel_file, month_processed,current_year,result,result2,column_name_in_fact_table):
+	'''churn metrics
+	Staff- Other Teaching - Leavers
+	Staff - Non Teaching - Leavers
+	Staff- Teachers - Leavers
+	'''
+	month = month_index(month_processed)
+	year = year_index(current_year, month)
+	#extract_metric(metric_name, school_id, month)
+	yr1 = extract_metric("Staff- Other Teaching - Leavers", school_name_in_excel_file,month_processed)
+	yr2 = extract_metric("Staff - Non Teaching - Leavers", school_name_in_excel_file,month_processed)
+	yr3 = extract_metric("Staff- Teachers - Leavers", school_name_in_excel_file,month_processed)
+	#convert all to arrays
+	yr1 = np.array(yr1)
+	yr1[np.isnan(yr1)] = 0
+	yr2 = np.array(yr2)
+	yr2[np.isnan(yr2)] = 0
+	yr3 = np.array(yr3)
+	yr3[np.isnan(yr3)] = 0
+	#print(nurs0,nurs1,nurs2,nurs3,nurs_other,nurs_etc)
+	
+	#add to a single res11ult
+	res = yr1+yr2+yr3
+	##
+	metric_values_of_churn = res
+	
+	'''calculate total of all the teachers'''
+
+	'''total teacher metrics
+	Staff - Other Teaching - Opening Balance
+	Staff - Teachers - Opening Balance
+	Staff - Non Teaching - Opening Balance
+	'''
+	month = month_index(month_processed)
+	year = year_index(current_year, month)
+	#extract_metric(metric_name, school_id, month)
+	yr1 = extract_metric("Staff - Non Teaching - Opening Balance", school_name_in_excel_file,month_processed)
+	yr2 = extract_metric("Staff - Teachers - Opening Balance", school_name_in_excel_file,month_processed)
+	yr3 = extract_metric("Staff - Other Teaching - Opening Balance", school_name_in_excel_file,month_processed)
+	#convert all to arrays
+	yr1 = np.array(yr1)
+	yr1[np.isnan(yr1)] = 0
+	yr2 = np.array(yr2)
+	yr2[np.isnan(yr2)] = 0
+	yr3 = np.array(yr3)
+	yr3[np.isnan(yr3)] = 0
+	#print(nurs0,nurs1,nurs2,nurs3,nurs_other,nurs_etc)
+	
+	#add to a single res11ult
+	res = yr1+yr2+yr3
+	##
+	metric_values_of_total_students = res
+
+	total_staff_churn_perc = metric_values_of_churn / metric_values_of_total_students
+
+	school_id = identify_school_name(school_name_in_excel_file)
+	result2 = assign_to_metric(school_id , month, year ,'total_staff_churn_perc', total_teacher_churn_perc , column_name_in_fact_table)
+	result = concat_df(result , result2)
+	return result
+
+def total_teacher_churn(school_name_in_excel_file, month_processed,current_year,result,result2,column_name_in_fact_table):
+	'''churn metrics
+	Staff- Other Teaching - Leavers
+	Staff - Non Teaching - Leavers
+	Staff- Teachers - Leavers
+	'''
+	month = month_index(month_processed)
+	year = year_index(current_year, month)
+	#extract_metric(metric_name, school_id, month)
+	yr1 = extract_metric("Staff- Other Teaching - Leavers", school_name_in_excel_file,month_processed)
+	yr2 = extract_metric("Staff - Non Teaching - Leavers", school_name_in_excel_file,month_processed)
+	yr3 = extract_metric("Staff- Teachers - Leavers", school_name_in_excel_file,month_processed)
+	#convert all to arrays
+	yr1 = np.array(yr1)
+	yr1[np.isnan(yr1)] = 0
+	yr2 = np.array(yr2)
+	yr2[np.isnan(yr2)] = 0
+	yr3 = np.array(yr3)
+	yr3[np.isnan(yr3)] = 0
+	#print(nurs0,nurs1,nurs2,nurs3,nurs_other,nurs_etc)
+	
+	#add to a single res11ult
+	res = yr1+yr2+yr3
+	##
+	metric_values = res.tolist()
+	print(metric_values)
+	school_id = identify_school_name(school_name_in_excel_file)
+	result2 = assign_to_metric(school_id , month, year ,'total_staff_churn', metric_values,column_name_in_fact_table)
+	result = concat_df(result , result2)
+	return result
 
 
 def add_multiple_metrics(metric_list,school_name_in_excel_file, month_processed):
@@ -13,7 +106,7 @@ def add_multiple_metrics(metric_list,school_name_in_excel_file, month_processed)
 		values_list = values_list + extract_metric(item, school_name_in_excel_file,month_processed)
 	return 
 
-def secondary(school_name_in_excel_file, month_processed,current_year,result,result2):
+def secondary(school_name_in_excel_file, month_processed,current_year,result,result2,column_name_in_fact_table):
 	'''
 	Pupils - Yr07-G06
 	Pupils - Yr08-G07
@@ -60,12 +153,12 @@ def secondary(school_name_in_excel_file, month_processed,current_year,result,res
 	metric_values = res.tolist()
 	print(metric_values)
 	school_id = identify_school_name(school_name_in_excel_file)
-	result2 = assign_to_metric(school_id , month, year ,'secondary', metric_values)
+	result2 = assign_to_metric(school_id , month, year ,'secondary', metric_values,column_name_in_fact_table)
 	result = concat_df(result , result2)
 	return result
 
 
-def upper_elementary(school_name_in_excel_file, month_processed,current_year,result,result2):
+def upper_elementary(school_name_in_excel_file, month_processed,current_year,result,result2,column_name_in_fact_table):
 	'''Lower_elementary
 	Pupils - Yr04-G03
 	Pupils - Yr05-G04
@@ -92,11 +185,11 @@ def upper_elementary(school_name_in_excel_file, month_processed,current_year,res
 	metric_values = res.tolist()
 	print(metric_values)
 	school_id = identify_school_name(school_name_in_excel_file)
-	result2 = assign_to_metric(school_id , month, year ,'upper_elementary', metric_values)
+	result2 = assign_to_metric(school_id , month, year ,'upper_elementary', metric_values,column_name_in_fact_table)
 	result = concat_df(result , result2)
 	return result
 
-def lower_elementary(school_name_in_excel_file, month_processed,current_year,result,result2):
+def lower_elementary(school_name_in_excel_file, month_processed,current_year,result,result2,column_name_in_fact_table):
 	'''Lower_elementary
 	Pupils - Yr01-KG-KG2
 	Pupils - Yr02-G01
@@ -123,11 +216,11 @@ def lower_elementary(school_name_in_excel_file, month_processed,current_year,res
 	metric_values = res.tolist()
 	print(metric_values)
 	school_id = identify_school_name(school_name_in_excel_file)
-	result2 = assign_to_metric(school_id , month, year ,'lower_elementary', metric_values)
+	result2 = assign_to_metric(school_id , month, year ,'lower_elementary', metric_values,column_name_in_fact_table)
 	result = concat_df(result , result2)
 	return result
 
-def nursery(school_name_in_excel_file, month_processed,current_year,result,result2):
+def nursery(school_name_in_excel_file, month_processed,current_year,result,result2,column_name_in_fact_table):
 	'''Pupils - Nursery -0+
 	Pupils - Nursery -1+
 	Pupils - Nursery -2+
@@ -169,11 +262,11 @@ def nursery(school_name_in_excel_file, month_processed,current_year,result,resul
 	metric_values = res.tolist()
 	print(metric_values)
 	school_id = identify_school_name(school_name_in_excel_file)
-	result2 = assign_to_metric(school_id , month, year ,'nursery', metric_values)
+	result2 = assign_to_metric(school_id , month, year ,'nursery', metric_values,column_name_in_fact_table)
 	result = concat_df(result , result2)
 	return result
 
-def load_dual_metric(metric1 , metric2 , school_name_in_excel_file, month_processed,current_year, metric_name_in_fact_table,result,result2, op ):
+def load_dual_metric(metric1 , metric2 , school_name_in_excel_file, month_processed,current_year, metric_name_in_fact_table,result,result2, op ,column_name_in_fact_table):
 	
 	month = month_index(month_processed)
 	year = year_index(current_year, month)
@@ -181,7 +274,7 @@ def load_dual_metric(metric1 , metric2 , school_name_in_excel_file, month_proces
 	#here we can assign a single value to it
 	metric_values  = operations_on_two_metrics(metric1, metric2, school_name_in_excel_file, month_processed, op)
 	school_id = identify_school_name(school_name_in_excel_file)
-	result2 = assign_to_metric(school_id , month, year ,metric_name_in_fact_table, metric_values)
+	result2 = assign_to_metric(school_id , month, year ,metric_name_in_fact_table, metric_values,column_name_in_fact_table)
 	result = concat_df(result , result2)
 	return result
 
@@ -195,12 +288,12 @@ def operations_on_two_metrics(metric1, metric2, school_id, month, op):
 		li3 = li3.tolist()
 	return li3
 
-def BS_cash_convent_metrics(month, year, school_id, result):
-	result = BS_load_metric('Covenant interest', school_id, month,year, 'Covenant_interest',result,result2)
-	result = BS_load_metric('Covenant leverage', school_id, month,year, ' Covenant_leverage',result,result2)
-	result = BS_load_metric('Interest / Debt Service cover', school_id, month,year, 'Intrest_debt_service_cover',result,result2)
-	result = BS_load_metric('Liquidity / Cash position', school_id, month,year, 'Liquidity_cash_position',result,result2)
-	result = BS_load_metric('Total Cash balance', school_id, month,year, 'total_cash_balance',result,result2)
+def BS_cash_convent_metrics(month, year, school_id, result,column_name_in_fact_table):
+	result = BS_load_metric('Covenant interest', school_id, month,year, 'Covenant_interest',result,result2,column_name_in_fact_table)
+	result = BS_load_metric('Covenant leverage', school_id, month,year, ' Covenant_leverage',result,result2,column_name_in_fact_table)
+	result = BS_load_metric('Interest / Debt Service cover', school_id, month,year, 'Intrest_debt_service_cover',result,result2,column_name_in_fact_table)
+	result = BS_load_metric('Liquidity / Cash position', school_id, month,year, 'Liquidity_cash_position',result,result2,column_name_in_fact_table)
+	result = BS_load_metric('Total Cash balance', school_id, month,year, 'total_cash_balance',result,result2,column_name_in_fact_table)
 	return result
 
 def BS_extract_metric(metric_name, school_id, month,year):
@@ -215,7 +308,7 @@ def BS_extract_metric(metric_name, school_id, month,year):
 	result2 = result2[0]
 	return result2
 
-def BS_load_metric(metric_name_in_excel_file, school_name_in_excel_file, month_processed,current_year, metric_name_in_fact_table,result,result2 ):
+def BS_load_metric(metric_name_in_excel_file, school_name_in_excel_file, month_processed,current_year, metric_name_in_fact_table,result,result2,column_name_in_fact_table ):
 	
 	BS_month_column_current = month_processed+current_year
 	BS_month_start_fy = 'sep'+current_year 
@@ -235,7 +328,7 @@ def BS_load_metric(metric_name_in_excel_file, school_name_in_excel_file, month_p
 		x = float(item)
 		yeary = yeary +[x]
 
-	result2 = assign_to_metric(school_id , month, yeary ,metric_name_in_fact_table, metric_values)
+	result2 = assign_to_metric(school_id , month, yeary ,metric_name_in_fact_table, metric_values, column_name_in_fact_table)
 	result = concat_df(result , result2)
 	return result
 
@@ -297,38 +390,39 @@ def useless_function():
 	'''
 	return
 
-def finance_metrics(year_of_file, month_of_file, school_id, result, result2):
+def finance_metrics(year_of_file, month_of_file, school_id, result, result2,column_name_in_fact_table):
 	#temporary assignment
 	school_name_in_excel_file = map_school_name_by_excel(school_id)
 	#load_metric(metric_name_in_excel_file, school_name_in_excel_file, month_processed,current_year, metric_name_in_fact_table,result,result2) 
 	
 	#enrollment 
-	result = load_metric('Total Pupils', school_name_in_excel_file, month_of_file, year_of_file, 'total_pupils', result,result2)
-	result = nursery(school_name_in_excel_file, month_of_file,year_of_file,result,result2)
-	result = lower_elementary(school_name_in_excel_file, month_of_file,year_of_file,result,result2)
-	result = upper_elementary(school_name_in_excel_file, month_of_file,year_of_file,result,result2)
-	result = secondary(school_name_in_excel_file, month_of_file,year_of_file,result,result2)
+	
+	result = load_metric('Total Pupils', school_name_in_excel_file, month_of_file, year_of_file, 'total_pupils', result,result2,column_name_in_fact_table)
+	result = nursery(school_name_in_excel_file, month_of_file,year_of_file,result,result2,column_name_in_fact_table)
+	result = lower_elementary(school_name_in_excel_file, month_of_file,year_of_file,result,result2,column_name_in_fact_table)
+	result = upper_elementary(school_name_in_excel_file, month_of_file,year_of_file,result,result2,column_name_in_fact_table)
+	result = secondary(school_name_in_excel_file, month_of_file,year_of_file,result,result2,column_name_in_fact_table)
 	
 	#revenue
-	result = load_metric('Total Revenue', school_name_in_excel_file, month_of_file, year_of_file, 'Revenue', result,result2)
+	result = load_metric('Total Revenue', school_name_in_excel_file, month_of_file, year_of_file, 'Revenue', result,result2,column_name_in_fact_table)
 	# fees 
-	result = load_metric('Net Fees', school_name_in_excel_file, month_of_file, year_of_file, 'Tution_Fees', result,result2)
+	result = load_metric('Net Fees', school_name_in_excel_file, month_of_file, year_of_file, 'Tution_Fees', result,result2,column_name_in_fact_table)
 	#load other income
-	result = load_metric('Other Income', school_name_in_excel_file, month_of_file, year_of_file, 'other_income', result,result2)
+	result = load_metric('Other Income', school_name_in_excel_file, month_of_file, year_of_file, 'other_income', result,result2,column_name_in_fact_table)
 	#load Avg Discount (%)
-	result = load_metric('Discount % Gross Fees', school_name_in_excel_file, month_of_file, year_of_file, 'Avg_Discount', result,result2)
+	result = load_metric('Discount % Gross Fees', school_name_in_excel_file, month_of_file, year_of_file, 'Avg_Discount', result,result2,column_name_in_fact_table)
 	#loading gross margin
-	result = load_metric('Gross Margin', school_name_in_excel_file, month_of_file, year_of_file, 'Gross_Margin', result,result2)
+	result = load_metric('Gross Margin', school_name_in_excel_file, month_of_file, year_of_file, 'Gross_Margin', result,result2,column_name_in_fact_table)
 	#loading GM Total % Income
-	result = load_metric('GM Total % Income', school_name_in_excel_file, month_of_file, year_of_file, 'Gross_Margin_perc', result,result2)
+	result = load_metric('GM Total % Income', school_name_in_excel_file, month_of_file, year_of_file, 'Gross_Margin_perc', result,result2,column_name_in_fact_table)
 	#Total Operating Costs
-	result = load_metric('Total Operating Costs', school_name_in_excel_file, month_of_file, year_of_file, 'opex', result,result2)
+	result = load_metric('Total Operating Costs', school_name_in_excel_file, month_of_file, year_of_file, 'opex', result,result2,column_name_in_fact_table)
 	#Total Opex % Income
-	result = load_metric('Total Opex % Income', school_name_in_excel_file, month_of_file, year_of_file, 'opex_perc', result,result2)
+	result = load_metric('Total Opex % Income', school_name_in_excel_file, month_of_file, year_of_file, 'opex_perc', result,result2,column_name_in_fact_table)
 	#Underlying EBITDA
-	result = load_metric('Underlying EBITDA', school_name_in_excel_file, month_of_file, year_of_file, 'ebitda', result,result2)
+	result = load_metric('Underlying EBITDA', school_name_in_excel_file, month_of_file, year_of_file, 'ebitda', result,result2,column_name_in_fact_table)
 	#ebitda perc
-	result = load_metric("Underlying EBITDA % Income", school_name_in_excel_file, month_of_file, year_of_file, 'ebitda_perc', result,result2)
+	result = load_metric("Underlying EBITDA % Income", school_name_in_excel_file, month_of_file, year_of_file, 'ebitda_perc', result,result2,column_name_in_fact_table)
 	#total a/r
 	'''
 	30 Days + Debtors
@@ -338,49 +432,49 @@ def finance_metrics(year_of_file, month_of_file, school_id, result, result2):
 	1 Year + Debtors
 	Total Debtors
 	'''
-	result = load_metric("Total Debtors", school_name_in_excel_file, month_of_file, year_of_file, 'total_ar', result,result2)
-	result = load_metric("30 Days + Debtors", school_name_in_excel_file, month_of_file, year_of_file, 'ar_30', result,result2)
-	result = load_metric("60 Days + Debtors", school_name_in_excel_file, month_of_file, year_of_file, 'ar_60', result,result2)
-	result = load_metric("90 Days + Debtors", school_name_in_excel_file, month_of_file, year_of_file, 'ar_90', result,result2)
+	result = load_metric("Total Debtors", school_name_in_excel_file, month_of_file, year_of_file, 'total_ar', result,result2,column_name_in_fact_table)
+	result = load_metric("30 Days + Debtors", school_name_in_excel_file, month_of_file, year_of_file, 'ar_30', result,result2,column_name_in_fact_table)
+	result = load_metric("60 Days + Debtors", school_name_in_excel_file, month_of_file, year_of_file, 'ar_60', result,result2,column_name_in_fact_table)
+	result = load_metric("90 Days + Debtors", school_name_in_excel_file, month_of_file, year_of_file, 'ar_90', result,result2,column_name_in_fact_table)
 	
 	return result
 
-def staff_metrics(year_of_file, month_of_file, school_id, result, result2):
+def staff_metrics(year_of_file, month_of_file, school_id, result, result2,column_name_in_fact_table):
 	#temporary assignment
 	school_name_in_excel_file = map_school_name_by_excel(school_id)
 	#1.total staff fte
-	result = load_metric("Staff FTEs", school_name_in_excel_file, month_of_file, year_of_file, 'Staff_FTE', result , result2 )
+	result = load_metric("Staff FTEs", school_name_in_excel_file, month_of_file, year_of_file, 'Staff_FTE', result , result2 ,column_name_in_fact_table)
 	#2.avg staff cost per fte
 		# we need to multiply the revenue index by 12
-	result = load_metric_multiply_by_12("Avg Total Staff Cost Per FTE", school_name_in_excel_file, month_of_file, year_of_file, 'avg_staff_cost_per_fte', result , result2 )
-
+	result = load_metric_multiply_by_12("Avg Total Staff Cost Per FTE", school_name_in_excel_file, month_of_file, year_of_file, 'avg_staff_cost_per_fte', result , result2 ,column_name_in_fact_table)
+	
+	
 	#3.Staff Costs % Revenue
-	result = load_dual_metric('Staff Costs' , 'Total Revenue', school_name_in_excel_file, month_of_file, year_of_file, 'staff_costs_by_revenue',result,result2, '/' )
+	result = load_dual_metric('Staff Costs' , 'Total Revenue', school_name_in_excel_file, month_of_file, year_of_file, 'staff_costs_by_revenue',result,result2, '/' ,column_name_in_fact_table)
+	
 	#4.Pupil Teacher Ratio (PTR)
 	#Total School PTR
-	result = load_metric("Total School PTR", school_name_in_excel_file, month_of_file, year_of_file, 'Total_School_PTR', result , result2 )
+	result = load_metric("Total School PTR", school_name_in_excel_file, month_of_file, year_of_file, 'Total_School_PTR', result , result2,column_name_in_fact_table )
 
 	#5. Pupil Total Teaching Staff Ratio (PTTRS)
-	result = load_metric("Total School PTTSR", school_name_in_excel_file, month_of_file, year_of_file, 'Total_School_PTTSR', result , result2 )
-
-
+	result = load_metric("Total School PTTSR", school_name_in_excel_file, month_of_file, year_of_file, 'Total_School_PTTSR', result , result2 ,column_name_in_fact_table)
 	# 6.Total Staff Churn
-		#sumn of all leavers
+	result = total_teacher_churn(school_name_in_excel_file, month_of_file, year_of_file , result,result2,column_name_in_fact_table)
 	#7.Total Staff Churn (%)
 		#perc of all leavers
 
 	#8. Teacher Churn
-	result = load_metric("Staff- Teachers - Leavers", school_name_in_excel_file, month_of_file, year_of_file, 'teacher_churn', result,result2 )
+	result = load_metric("Staff- Teachers - Leavers", school_name_in_excel_file, month_of_file, year_of_file, 'teacher_churn', result,result2 ,column_name_in_fact_table)
 	#9.Teacher Churn (%)
-	result = load_metric("Staff - Teachers - Churn", school_name_in_excel_file, month_of_file, year_of_file, 'teacher_churn_perc', result,result2 )
+	result = load_metric("Staff - Teachers - Churn", school_name_in_excel_file, month_of_file, year_of_file, 'teacher_churn_perc', result,result2,column_name_in_fact_table )
 	#10. Other Teaching Staff Churn
-	result = load_metric("Staff- Other Teaching - Leavers", school_name_in_excel_file, month_of_file, year_of_file, 'other_staff_churn', result,result2 )
+	result = load_metric("Staff- Other Teaching - Leavers", school_name_in_excel_file, month_of_file, year_of_file, 'other_staff_churn', result,result2,column_name_in_fact_table )
 	#11. Other Teaching Staff Churn (%)
-	result = load_metric("Staff - Other Teaching - Churn", school_name_in_excel_file, month_of_file, year_of_file, 'other_staff_churn_perc', result,result2 )
+	result = load_metric("Staff - Other Teaching - Churn", school_name_in_excel_file, month_of_file, year_of_file, 'other_staff_churn_perc', result,result2,column_name_in_fact_table )
 	#12. Non-Academic Staff Churn
-	result = load_metric("Staff - Non Teaching - Leavers", school_name_in_excel_file, month_of_file, year_of_file, 'non_teaching_staff_churn', result,result2 )
+	result = load_metric("Staff - Non Teaching - Leavers", school_name_in_excel_file, month_of_file, year_of_file, 'non_teaching_staff_churn', result,result2 ,column_name_in_fact_table)
 	#13. Non-Academic Staff Churn (%)
-	result = load_metric("Staff - Non Teaching - Churn", school_name_in_excel_file, month_of_file, year_of_file, 'non_teaching_staff_churn_perc', result,result2 )
+	result = load_metric("Staff - Non Teaching - Churn", school_name_in_excel_file, month_of_file, year_of_file, 'non_teaching_staff_churn_perc', result,result2 ,column_name_in_fact_table)
 	return result
 
 def identify_school_name(school_name_in_excel_file):
@@ -401,23 +495,24 @@ def map_school_name_by_excel(school_name_in_excel_file):
 		pass
 	return school_id
 
-def load_metric(metric_name_in_excel_file, school_name_in_excel_file, month_processed,current_year, metric_name_in_fact_table,result,result2 ):
+def load_metric(metric_name_in_excel_file, school_name_in_excel_file, month_processed,current_year, metric_name_in_fact_table,result,result2,column_name_in_fact_table ):
 	month = month_index(month_processed)
 	year = year_index(current_year, month)
 	metric_values = extract_metric(metric_name_in_excel_file, school_name_in_excel_file, month_processed)
 	school_id = identify_school_name(school_name_in_excel_file)
-	result2 = assign_to_metric(school_id , month, year ,metric_name_in_fact_table, metric_values)
+	print("In load metric", column_name_in_fact_table)
+	result2 = assign_to_metric(school_id , month, year ,metric_name_in_fact_table, metric_values,column_name_in_fact_table)
 	result = concat_df(result , result2)
 	return result
 
 
-def load_metric_multiply_by_12(metric_name_in_excel_file, school_name_in_excel_file, month_processed,current_year, metric_name_in_fact_table,result,result2 ):
+def load_metric_multiply_by_12(metric_name_in_excel_file, school_name_in_excel_file, month_processed,current_year, metric_name_in_fact_table,result,result2,column_name_in_fact_table):
 	month = month_index(month_processed)
 	year = year_index(current_year, month)
 	metric_values = extract_metric(metric_name_in_excel_file, school_name_in_excel_file, month_processed)
 	school_id = identify_school_name(school_name_in_excel_file)
-	result2 = assign_to_metric(school_id , month, year ,metric_name_in_fact_table, metric_values)
-	result2['Monthly_actuals'] = result2['Monthly_actuals']*12
+	result2 = assign_to_metric(school_id , month, year ,metric_name_in_fact_table, metric_values,column_name_in_fact_table)
+	result2[column_name_in_fact_table] = result2[column_name_in_fact_table]*12
 	result = concat_df(result , result2)
 	return result
 
@@ -426,20 +521,26 @@ def concat_df(res, res1):
 	res = pd.concat(frames)
 	return res
 
-def assign_to_metric(school_id,month,year,metric,monthly_actuals):
+def assign_to_metric(school_id,month,year,metric,column_name_in_fact_table_metric_values,column_name_in_fact_table):
 	res = pd.DataFrame()
 	res['school_id'] = [school_id] * len(month)
 	res['year'] = year
 	res['month'] = month
 	res['metric'] = [metric] *len(monty)
-	res['Monthly_actuals'] = monthly_actuals
+	print(column_name_in_fact_table,column_name_in_fact_table_metric_values)
+	res[column_name_in_fact_table] = column_name_in_fact_table_metric_values
 	return res
 
 def extract_metric(metric_name, school_id, month):
-	result = df[(df['metric'] == metric_name) & (df['school_id'] == school_id)]
-	result = result.ix[:,'sept':month]
-	result = result.values.tolist()
-	result = result[0]
+	try:
+		result = df[(df['metric'] == metric_name) & (df['school_id'] == school_id)]
+		result = result.ix[:,'sept':month]
+		result = result.values.tolist()
+		print(metric_name, school_id, month,result)
+		result = result[0]
+	except : 
+		'''hardcoded values as budget does not have this '''
+		return [0,0,0,0,0,0,0,0,0,0,0,0]
 	return result
 
 def year_index(year, monty):
@@ -470,17 +571,18 @@ def month_index(month):
 
 '''Read the PnL file'''
 df = pd.read_excel("AISS_SAIS_P&L_DEC_2015.xlsx")
+print(df)
 monty = month_index('dec')
 year = year_index(2015, monty)
 #finance metrics
-result = finance_metrics(2015,'dec','sais',result,result2)
+result = finance_metrics(2015,'dec','sais',result,result2,'Monthly_actuals')
 #staff metrics
-result = staff_metrics(2015,'dec','sais',result,result2)
+result = staff_metrics(2015,'dec','sais',result,result2,'Monthly_actuals')
 
 #for aiss
-result = finance_metrics(2015,'dec','aiss',result,result2)
+result = finance_metrics(2015,'dec','aiss',result,result2,column_name_in_fact_table = 'Monthly_actuals')
 #staff metrics
-result = staff_metrics(2015,'dec','aiss',result,result2)
+result = staff_metrics(2015,'dec','aiss',result,result2,column_name_in_fact_table ='Monthly_actuals')
 
 
 '''Read the Dashboard file'''
@@ -489,7 +591,7 @@ df = pd.read_excel("AISS_SAIS_DASHBOARD_DEC_2015.xlsx",skiprows = 1)
 df.columns = BS_month_column_list
 df = BS_sanitise_file(df)
 # The function to pull out 5 metrics
-result = BS_cash_convent_metrics('dec', '2015', 'SAIS', result)
+result = BS_cash_convent_metrics('dec', '2015', 'SAIS', result, 'Monthly_actuals')
 
 #for aiss
 df = pd.read_excel("AISS_SAIS_DASHBOARD_DEC_2015.xlsx",skiprows = 1)
@@ -497,10 +599,28 @@ df = pd.read_excel("AISS_SAIS_DASHBOARD_DEC_2015.xlsx",skiprows = 1)
 df.columns = BS_month_column_list
 df = BS_sanitise_file(df)
 # The function to pull out 5 metrics(give school_id in CAPITALS)
-result = BS_cash_convent_metrics('dec', '2015', 'AISS', result)
+result = BS_cash_convent_metrics('dec', '2015', 'AISS', result,'Monthly_actuals')
 
-print(result) 
+#print(result) 
 
+#to load the budget files we do not need any month date, we just load the files as it is
+df = pd.read_excel("Budget FY1516 for Dashboard - SAIS AIS (including BSP).xlsx")
+print(df)
+monty = month_index('aug')
+year = year_index(2015, monty)
+#finance metrics
+budget = finance_metrics(2015,'aug','sais',budget,budget2,'Monthly_budget')
+#staff metrics
+budget = staff_metrics(2015,'aug','sais',budget,budget2,'Monthly_budget')
 
+#for aiss
+budget = finance_metrics(2015,'aug','aiss',budget,budget2,column_name_in_fact_table = 'Monthly_budget')
+#staff metrics
+budget = staff_metrics(2015,'aug','aiss',budget,budget2,column_name_in_fact_table ='Monthly_budget')
+
+combined = pd.DataFrame()
+combined = pd.merge(result, budget, how = 'right', on = ['school_id','year','month','metric'])
+
+combined.to_excel('combined_table.xlsx', index = False)
 #writing file to excel
-result.to_excel('fact_table.xlsx',index = False)
+#result.to_excel('fact_table.xlsx',index = False)
