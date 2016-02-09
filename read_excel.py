@@ -1,6 +1,6 @@
 import pandas as pd
 #lets take csv files
-csv = pd.read_excel("Budget FY1516 for Dashboard - SAIS AIS (including BSP).xlsx")
+csv = pd.read_excel("SAIS & AISS P&L - Aug 2015.xlsx")
 #lets extract the data from schools
 print(csv)
 li = csv['Currency'].values.tolist()
@@ -22,7 +22,7 @@ for item in x:
 csv['Currency'] = li1
 csv.columns = ['school_id', 'metric', 'sept', 'oct','nov','dec','jan','feb','march','april','may', 'june', 'july', 'aug','total_year']
 ##write it back to a csv files
-csv.to_excel('Budget FY1516 for Dashboard - SAIS AIS (including BSP).xlsx',index = False)
+csv.to_excel('SAIS & AISS P&L - Aug 2015.xlsx',index = False)
 print(csv.ix[7:9,'school_id':'dec'])
 
 """#code to add the two metrics to give a resultant one

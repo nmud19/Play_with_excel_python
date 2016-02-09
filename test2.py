@@ -1,4 +1,5 @@
 import pandas as pd
+result = pd.DataFrame()
 def add_more(result):
 	result1 = pd.DataFrame()
 	result1['hello'] = [1,2,3,4,5,6,7,8]
@@ -6,12 +7,30 @@ def add_more(result):
 	#print(result1)
 	result = pd.merge(result,result1,how = 'right', on='hello')
 	return result
-
+def extract_metric(metric_name, school_id, month):
+	try:
+		result = df[(df['metric'] == metric_name) & (df['school_id'] == school_id)]
+		result = result.ix[:,'sept':month]
+		result = result.values.tolist()
+		result = result[0]
+	except : 
+		'''hardcoded values as budget does not have this '''
+		return [0,0,0,0,0,0,0,0,0,0,0,0]
+	return result
 #main
 df = pd.read_excel("AISS_SAIS_P&L_DEC_2015.xlsx")
-result = pd.DataFrame()
-result['hello'] = [1,2,3,4]
-name = 'world'
-result[name] = [11,22,33,44]
-result = add_more(result)
-print(result)
+result2 = extract_metric('Total Revenue', 'Total Stamford AIS','dec')
+'''print(result2)
+fy_ytd=0
+ytd = []
+for item in result2:
+	fy_ytd = fy_ytd + item
+	ytd = ytd + [fy_ytd]
+
+print(ytd)
+
+'''
+
+li = [1,2,3,4,5]
+li = li * 12
+print(li)
